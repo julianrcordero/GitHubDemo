@@ -1,9 +1,28 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import React, { PureComponent, useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { create as apiCreate } from "apisauce";
 
+class CommitCard extends PureComponent {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { author, hash, message } = this.props;
+
+    return (
+      <View style={{ borderWidth: 1 }}>
+        <Text style={{ fontSize: 20 }}>{author}</Text>
+        <Text>{hash}</Text>
+        <Text>{message}</Text>
+      </View>
+    );
+  }
+}
+
 export default function App() {
+  const [data, setData] = useState([]);
+
   const myURL = "https://api.github.com";
   const client = apiCreate({ baseURL: myURL });
   const getItem = () => client.get("/repos/twitter/bootstrap/commits", {});
@@ -11,7 +30,7 @@ export default function App() {
   const loadData = async () => {
     const response = await getItem();
     if (response.ok) {
-      console.log(response.data);
+      setData(response.data.slice(0, 25));
     } else {
       Alert.alert("Error retrieving data", "Please pull down to refresh", [
         {
@@ -23,12 +42,20 @@ export default function App() {
 
   useEffect(() => {
     loadData();
-  });
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <CommitCard
+      author={item.commit.author.name}
+      hash={item.sha}
+      message={item.commit.message}
+    />
+  );
 
   return (
     <View style={styles.container}>
       <Text>GitHub Commits for the Bootstrap repository by Twitter</Text>
-      <StatusBar style="auto" />
+      <FlatList data={data} renderItem={renderItem} />
     </View>
   );
 }
