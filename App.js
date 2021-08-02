@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import CommitCard from "./CommitCard";
 import client from "./ApiClient";
 
 export default function App() {
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const getItem = () => client.get("/repos/twitter/bootstrap/commits", {});
 
@@ -18,12 +27,20 @@ export default function App() {
           text: "OK",
         },
       ]);
+      setData([]);
     }
+
+    setRefreshing(false);
   };
 
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadData();
+  };
 
   const renderItem = ({ item }) => (
     <CommitCard
@@ -33,11 +50,21 @@ export default function App() {
     />
   );
 
+  const keyExtractor = (item) => item.node_id;
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>GitHub Commits for the Bootstrap repository by Twitter</Text>
-      <FlatList data={data} renderItem={renderItem} />
-    </View>
+
+      <FlatList
+        data={data}
+        keyExtractor={keyExtractor}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+        renderItem={renderItem}
+      />
+    </SafeAreaView>
   );
 }
 
