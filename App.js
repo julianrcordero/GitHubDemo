@@ -1,30 +1,11 @@
-import React, { PureComponent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
-import { create as apiCreate } from "apisauce";
-
-class CommitCard extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { author, hash, message } = this.props;
-
-    return (
-      <View style={{ borderWidth: 1 }}>
-        <Text style={{ fontSize: 20 }}>{author}</Text>
-        <Text>{hash}</Text>
-        <Text>{message}</Text>
-      </View>
-    );
-  }
-}
+import CommitCard from "./CommitCard";
+import client from "./ApiClient";
 
 export default function App() {
   const [data, setData] = useState([]);
 
-  const myURL = "https://api.github.com";
-  const client = apiCreate({ baseURL: myURL });
   const getItem = () => client.get("/repos/twitter/bootstrap/commits", {});
 
   const loadData = async () => {
