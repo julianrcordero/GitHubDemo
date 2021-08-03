@@ -12,18 +12,24 @@ import {
 import MyButton from "./MyButton";
 const { width } = Dimensions.get("window");
 
-export default function WelcomeScreen({ setRepo }) {
-  const [text, setText] = useState("");
+export default function WelcomeScreen({ setOwner, setRepo }) {
+  const [first, setFirst] = useState("");
+  const [second, setSecond] = useState("");
 
   const logIn = () => {
-    if (text.length > 0) {
-      setRepo(text);
+    if (first.length > 0 && second.length > 0) {
+      setOwner(first);
+      setRepo(second);
     } else
-      Alert.alert("Invalid username", "Please enter a valid username", [
-        {
-          text: "OK",
-        },
-      ]);
+      Alert.alert(
+        "Invalid repository",
+        "Please enter a valid repository name",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
   };
 
   return (
@@ -34,10 +40,19 @@ export default function WelcomeScreen({ setRepo }) {
         source={require("./assets/GitHub-Mark.png")}
       />
       <View>
-        <Text style={styles.text}>{"Please enter a repository name:"}</Text>
+        <Text style={styles.text}>
+          {"Please enter an owner and repository name:"}
+        </Text>
         <TextInput
-          value={text}
-          onChangeText={setText}
+          placeholder={"OWNER"}
+          value={first}
+          onChangeText={setFirst}
+          style={styles.textInput}
+        />
+        <TextInput
+          placeholder={"REPOSITORY"}
+          value={second}
+          onChangeText={setSecond}
           style={styles.textInput}
         />
         <View style={styles.login}>
@@ -56,14 +71,15 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
     width: width * 0.75,
   },
   image: { height: 250 },
   login: { height: 50, marginVertical: 10 },
   text: { textAlign: "center", padding: 10 },
   textInput: {
-    borderWidth: 0.2,
+    borderWidth: 0.5,
+    marginVertical: 5,
     padding: 10,
     width: width * 0.75,
   },

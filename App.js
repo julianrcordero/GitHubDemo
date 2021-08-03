@@ -15,14 +15,15 @@ import WelcomeScreen from "./WelcomeScreen";
 import MyButton from "./MyButton";
 
 export default function App() {
+  const [owner, setOwner] = useState();
   const [repo, setRepo] = useState();
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = async () => {
-    if (repo) {
-      console.log("loading repo:", repo);
-      const response = await commitsApi.getCommits(repo);
+    if (owner && repo) {
+      console.log(owner, repo);
+      const response = await commitsApi.getCommits(owner, repo);
       if (response.ok) {
         setData(response.data);
       } else {
@@ -61,11 +62,12 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AuthContext.Provider value={{ repo, setRepo }}>
-        {repo ? (
+      <AuthContext.Provider value={{ owner, repo, setRepo }}>
+        {owner && repo ? (
           <>
             <Text>
-              GitHub Commits for the '{repo.toLowerCase()}' repository by GitHub
+              GitHub Commits for the '{repo.toLowerCase()}' repository by '
+              {owner.toLowerCase()}'
             </Text>
 
             <FlatList
@@ -82,14 +84,14 @@ export default function App() {
             />
             <View style={styles.buttonBox}>
               <MyButton
-                text={"Change Repository"}
+                text={"Change Owner / Repository"}
                 color={"darkgrey"}
                 onPress={() => setRepo(null)}
               />
             </View>
           </>
         ) : (
-          <WelcomeScreen setRepo={setRepo} />
+          <WelcomeScreen setOwner={setOwner} setRepo={setRepo} />
         )}
       </AuthContext.Provider>
     </SafeAreaView>

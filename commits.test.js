@@ -2,7 +2,7 @@ import commitsApi from "./api/commits";
 import Moment from "moment";
 
 test("The data is in the form of a non-empty array", async () => {
-  const response = await commitsApi.getCommits();
+  const response = await commitsApi.getCommits("github", "docs");
 
   const data = response.data;
 
@@ -11,7 +11,7 @@ test("The data is in the form of a non-empty array", async () => {
 });
 
 test("All entries contain required properties", async () => {
-  const response = await commitsApi.getCommits();
+  const response = await commitsApi.getCommits("github", "docs");
 
   let data = response.data;
   for (let i = 0; i < data.length; i++) {
@@ -24,7 +24,7 @@ test("All entries contain required properties", async () => {
 });
 
 test("Date is in proper format", async () => {
-  const response = await commitsApi.getCommits();
+  const response = await commitsApi.getCommits("github", "docs");
 
   let data = response.data;
   for (let i = 0; i < data.length; i++) {
