@@ -45,6 +45,7 @@ export default function App() {
   const renderItem = ({ item }) => (
     <CommitCard
       author={item.commit.author.name}
+      date={item.commit.author.date}
       hash={item.sha}
       message={item.commit.message}
     />
@@ -63,6 +64,7 @@ export default function App() {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
         renderItem={renderItem}
+        contentContainerStyle={styles.contentContainer}
       />
     </SafeAreaView>
   );
@@ -74,5 +76,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  contentContainer: {
+    width: "90%",
   },
 });
