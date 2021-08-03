@@ -17,13 +17,8 @@ export default function App() {
   const loadData = async () => {
     const response = await commitsApi.getCommits();
     if (response.ok) {
-      setData(response.data.slice(0, 25));
+      setData(response.data);
     } else {
-      Alert.alert("Error retrieving data", "Please pull down to refresh", [
-        {
-          text: "OK",
-        },
-      ]);
       setData([]);
     }
 

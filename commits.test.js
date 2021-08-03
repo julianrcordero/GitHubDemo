@@ -13,7 +13,7 @@ test("The data is in the form of a non-empty array", async () => {
 test("All entries contain required properties", async () => {
   const response = await commitsApi.getCommits();
 
-  let data = response.data.slice(0, 25);
+  let data = response.data;
   for (let i = 0; i < data.length; i++) {
     expect(data[i]).toHaveProperty("commit.author.name");
     expect(data[i]).toHaveProperty("commit.author.date");
@@ -26,7 +26,7 @@ test("All entries contain required properties", async () => {
 test("Date is in proper format", async () => {
   const response = await commitsApi.getCommits();
 
-  let data = response.data.slice(0, 25);
+  let data = response.data;
   for (let i = 0; i < data.length; i++) {
     let date = Moment(data[i].commit.author.date);
     expect(date.isValid()).toBe(true);
