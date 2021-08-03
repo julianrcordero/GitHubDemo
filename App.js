@@ -6,19 +6,16 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
 } from "react-native";
 import CommitCard from "./CommitCard";
-import client from "./ApiClient";
+import commitsApi from "./api/commits";
 
 export default function App() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const getItem = () => client.get("/repos/twitter/bootstrap/commits", {});
-
   const loadData = async () => {
-    const response = await getItem();
+    const response = await commitsApi.getCommits();
     if (response.ok) {
       setData(response.data.slice(0, 25));
     } else {
