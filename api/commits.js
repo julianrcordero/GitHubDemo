@@ -1,8 +1,9 @@
 import client from "./ApiClient";
 
-const endpoint = "/repos/twitter/bootstrap/commits";
+const endpoint = "/repos";
 const params = { per_page: 25 };
-const getCommits = () => client.get(endpoint, params);
+const getCommits = (repo) =>
+  client.get(endpoint + "/github/" + repo + "/commits", params);
 
 export default {
   getCommits,

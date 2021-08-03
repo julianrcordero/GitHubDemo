@@ -6,28 +6,42 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  View,
 } from "react-native";
 import CommitCard from "./CommitCard";
 import commitsApi from "./api/commits";
+import AuthContext from "./context";
+import WelcomeScreen from "./WelcomeScreen";
+import MyButton from "./MyButton";
 
 export default function App() {
+  const [repo, setRepo] = useState();
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = async () => {
-    const response = await commitsApi.getCommits();
-    if (response.ok) {
-      setData(response.data);
-    } else {
-      setData([]);
-    }
+    if (repo) {
+      console.log("loading repo:", repo);
+      const response = await commitsApi.getCommits(repo);
+      if (response.ok) {
+        setData(response.data);
+      } else {
+        Alert.alert("Error retrieving commits", response.data.message, [
+          {
+            text: "OK",
+          },
+        ]);
 
-    setRefreshing(false);
+        setData([]);
+      }
+
+      setRefreshing(false);
+    }
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [repo]);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -47,22 +61,47 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>GitHub Commits for the Bootstrap repository by Twitter</Text>
+      <AuthContext.Provider value={{ repo, setRepo }}>
+        {repo ? (
+          <>
+            <Text>
+              GitHub Commits for the '{repo.toLowerCase()}' repository by GitHub
+            </Text>
 
-      <FlatList
-        data={data}
-        keyExtractor={keyExtractor}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
-      />
+            <FlatList
+              data={data}
+              keyExtractor={keyExtractor}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                />
+              }
+              renderItem={renderItem}
+              contentContainerStyle={styles.contentContainer}
+            />
+            <View style={styles.buttonBox}>
+              <MyButton
+                text={"Change Repository"}
+                color={"darkgrey"}
+                onPress={() => setRepo(null)}
+              />
+            </View>
+          </>
+        ) : (
+          <WelcomeScreen setRepo={setRepo} />
+        )}
+      </AuthContext.Provider>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  buttonBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
