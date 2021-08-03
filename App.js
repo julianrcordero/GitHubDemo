@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Button,
   FlatList,
   RefreshControl,
   SafeAreaView,
@@ -19,20 +20,16 @@ export default function App() {
   const [repo, setRepo] = useState();
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(false);
 
   const loadData = async () => {
     if (owner && repo) {
-      console.log(owner, repo);
       const response = await commitsApi.getCommits(owner, repo);
       if (response.ok) {
+        setError(false);
         setData(response.data);
       } else {
-        Alert.alert("Error retrieving commits", response.data.message, [
-          {
-            text: "OK",
-          },
-        ]);
-
+        setError(true);
         setData([]);
       }
 
@@ -65,10 +62,23 @@ export default function App() {
       <AuthContext.Provider value={{ owner, repo, setRepo }}>
         {owner && repo ? (
           <>
-            <Text>
-              GitHub Commits for the '{repo.toLowerCase()}' repository by '
-              {owner.toLowerCase()}'
-            </Text>
+            {error ? (
+              <>
+                <Text>Couldn't retrieve the commits.</Text>
+                <View style={styles.buttonBox}>
+                  <MyButton
+                    text={"RETRY"}
+                    color={"darkgrey"}
+                    onPress={handleRefresh}
+                  />
+                </View>
+              </>
+            ) : (
+              <Text>
+                GitHub Commits for the '{repo.toLowerCase()}' repository by '
+                {owner.toLowerCase()}'
+              </Text>
+            )}
 
             <FlatList
               data={data}
