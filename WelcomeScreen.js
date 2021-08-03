@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AuthContext from "./context";
 import MyButton from "./MyButton";
 const { width } = Dimensions.get("window");
 
-export default function WelcomeScreen({ setOwner, setRepo }) {
+export default function WelcomeScreen() {
+  const { setOwner, setRepo } = useContext(AuthContext);
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
 
@@ -22,8 +24,8 @@ export default function WelcomeScreen({ setOwner, setRepo }) {
       setRepo(second);
     } else
       Alert.alert(
-        "Invalid repository",
-        "Please enter a valid repository name",
+        "Invalid input(s)",
+        "Please enter a valid owner / repository combination",
         [
           {
             text: "OK",

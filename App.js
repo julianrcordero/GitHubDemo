@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  Button,
   FlatList,
   RefreshControl,
   SafeAreaView,
@@ -59,7 +57,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AuthContext.Provider value={{ owner, repo, setRepo }}>
+      <AuthContext.Provider value={{ setOwner, setRepo }}>
         {owner && repo ? (
           <>
             {error ? (
@@ -74,7 +72,7 @@ export default function App() {
                 </View>
               </>
             ) : (
-              <Text>
+              <Text style={styles.heading}>
                 GitHub Commits for the '{repo.toLowerCase()}' repository by '
                 {owner.toLowerCase()}'
               </Text>
@@ -101,7 +99,7 @@ export default function App() {
             </View>
           </>
         ) : (
-          <WelcomeScreen setOwner={setOwner} setRepo={setRepo} />
+          <WelcomeScreen />
         )}
       </AuthContext.Provider>
     </SafeAreaView>
@@ -111,7 +109,6 @@ export default function App() {
 const styles = StyleSheet.create({
   buttonBox: {
     flexDirection: "row",
-    justifyContent: "space-between",
     width: "90%",
   },
   container: {
@@ -122,5 +119,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: "90%",
+  },
+  heading: {
+    color: "navy",
+    fontSize: 22,
+    fontWeight: "bold",
   },
 });

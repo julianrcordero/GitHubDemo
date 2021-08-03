@@ -14,12 +14,7 @@ export default class CommitCard extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Text
-          style={styles.message}
-          // numberOfLines={1}
-        >
-          {message}
-        </Text>
+        <Text style={styles.message}>{message}</Text>
         <View style={styles.authorLine}>
           <Text style={styles.authorText}>{author}</Text>
           <Text style={styles.date}>{formattedDate}</Text>
@@ -41,7 +36,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   authorText: {
-    //   textAlign: "center",
     color: "darkslategrey",
     flex: 3,
     fontWeight: "bold",
